@@ -133,57 +133,70 @@
                         <div class="col-span-2">
                             <label for="name"
                                 class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nombre</label>
-                            <input type="text" id="name" x-model="formProperty.name" required
+                            <input type="text" id="name" x-model="formProperty.name" @blur="validateField('name')"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                 placeholder="Propiedad N">
+                            <p class="text-red-400 text-xs" x-show="formErrors.name" x-text="formErrors.name"></p>
                         </div>
                         <div class="col-span-2">
                             <label for="address"
                                 class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Dirección</label>
-                            <input type="text" id="address" x-model="formProperty.address" required
+                            <input type="text" id="address" x-model="formProperty.address"
+                                @blur="validateField('address')"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                 placeholder="Calle 30 # 40-29">
+                            <p class="text-red-400 text-xs" x-show="formErrors.address" x-text="formErrors.address"></p>
                         </div>
                         <div class="col-span-2 sm:col-span-1">
                             <label for="country"
                                 class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">País</label>
-                            <input type="text" id="country" x-model="formProperty.country" required
+                            <input type="text" id="country" x-model="formProperty.country"
+                                @blur="validateField('country')"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                 placeholder="Colombia">
+                            <p class="text-red-400 text-xs" x-show="formErrors.country" x-text="formErrors.country"></p>
                         </div>
                         <div class="col-span-2 sm:col-span-1">
-                            <label for="country"
+                            <label for="city"
                                 class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Ciudad</label>
-                            <input type="text" id="city" x-model="formProperty.city" required
+                            <input type="text" id="city" x-model="formProperty.city" @blur="validateField('city')"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                 placeholder="Valledupar">
+                            <p class="text-red-400 text-xs" x-show="formErrors.city" x-text="formErrors.city"></p>
                         </div>
                         <div class="col-span-2">
                             <label for="type" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tipo
                                 de
                                 Propiedad</label>
-                            <select id="type" x-model="formProperty.type" required
+                            <select id="type" x-model="formProperty.type" @blur="validateField('type')"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                                 <template x-for="type in typesProperty" :key="type.id">
                                     <option :value="type.id" x-text="type.name"></option>
                                 </template>
                             </select>
+                            <p class="text-red-400 text-xs" x-show="formErrors.type" x-text="formErrors.type"></p>
                         </div>
                         <div class="col-span-2 sm:col-span-1">
                             <label for="zip_code"
                                 class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Código
                                 Postal</label>
-                            <input type="number" name="zip_code" x-model="formProperty.zip_code" required maxlength="6"
+                            <input type="number" name="zip_code" x-model="formProperty.zip_code"
+                                @blur="validateField('zip_code')"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                 placeholder="200005">
+                            <p class="text-red-400 text-xs" x-show="formErrors.zip_code" x-text="formErrors.zip_code">
+                            </p>
                         </div>
                         <div class="col-span-2 sm:col-span-1">
                             <label for="area"
                                 class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Supericie
                                 (m2)</label>
-                            <input type="number" step="any" id="area" x-model="formProperty.area" required maxlength="6"
+                            <input type="number" step="any" id="area" x-model="formProperty.area"
+                                @blur="validateField('area')"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                 placeholder="60">
+                            <p class="text-red-400 text-xs" x-show="formErrors.area" x-text="formErrors.area">
+                            </p>
                         </div>
                     </div>
                     <button type="submit" x-text="isEdit ? 'Actualizar' : 'Crear'"
@@ -255,6 +268,16 @@
                     country: "",
                     city: "",
                     zip_code: "",
+                    type: 1,
+                    area: ""
+                },
+
+                formErrors: {
+                    name: "",
+                    address: "",
+                    country: "",
+                    city: "",
+                    zip_code: "",
                     type: "",
                     area: ""
                 },
@@ -277,41 +300,52 @@
                         });
 
                 }, saveProperty() {
-                    const url = this.isEdit ? `/api/v1/property/${this.formProperty.id}/` : '/api/v1/property/';
-                    const method = this.isEdit ? 'PUT' : 'POST';
-                    fetch(url, {
-                        method: method,
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRFToken': '{{ csrf_token }}',
-                        },
-                        body: JSON.stringify(this.formProperty)
-                    })
-                        .then(response => {
-                            if (response.ok) {
-                                return response.json();
-                            }
-                            return response.json().then((errorData) => {
-                                let errorMessage = '';
-                                if (Array.isArray(errorData.message)) {
-                                    errorMessage = errorData.errors.join(', '); // Join the error messages into a single string
-                                }
-                                console.log(errorData)
-                            });
+                    let isFormValid = true;
+                    for (const field in this.formProperty) {
+                        this.validateField(field);
+                        if (this.formErrors[field]) {
+                            isFormValid = false;
+                        }
+                    }
+
+                    if (isFormValid) {
+                        const url = this.isEdit ? `/api/v1/property/${this.formProperty.id}/` : '/api/v1/property/';
+                        const method = this.isEdit ? 'PUT' : 'POST';
+                        fetch(url, {
+                            method: method,
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': '{{ csrf_token }}',
+                            },
+                            body: JSON.stringify(this.formProperty)
                         })
-                        .then(data => {
-                            if (this.isEdit) {
-                                const index = this.filteredProperties.findIndex(item => item.id === data.content.id);
-                                this.filteredProperties[index] = data.content;
-                            } else {
-                                this.filteredProperties.push(data.content)
-                            }
-                            this.openModal = false;
-                            this.showToast(data.message);
+                            .then(response => {
+                                if (response.ok) {
+                                    return response.json();
+                                }
+                                return response.json().then((errorData) => {
+                                    let errorMessage = '';
+                                    if (Array.isArray(errorData.message)) {
+                                        errorMessage = errorData.errors.join(', '); // Join the error messages into a single string
+                                    }
+                                    console.log(errorData)
+                                });
+                            })
+                            .then(data => {
+                                if (this.isEdit) {
+                                    const index = this.filteredProperties.findIndex(item => item.id === data.content.id);
+                                    this.filteredProperties[index] = data.content;
+                                } else {
+                                    this.filteredProperties.push(data.content)
+                                }
+                                this.openModal = false;
+                                this.showToast(data.message);
 
-                        }).catch(error => {
+                            }).catch(error => {
 
-                        });
+                            });
+                    }
+
                 }, deleteProperty() {
                     const url = `/api/v1/property/${this.propertyId}/`
                     fetch(url, {
@@ -349,7 +383,7 @@
                     if (edit && item) {
                         this.formProperty = { ...item }
                     } else {
-                        this.formProperty = { name: "", address: "", country: "", city: "", zip_code: "", type: "", area: "" }
+                        this.formProperty = { name: "", address: "", country: "", city: "", zip_code: "", type: 1, area: "" }
                     }
                 }, setOpenModalDelete(property) {
                     this.openModalDelete = true
@@ -360,7 +394,14 @@
                     this.message = message;
                     this.toast = true;
                     setTimeout(() => { this.toast = false; }, 5000); // Hide after 3 seconds
-                }
+                },
+                validateField(field) {
+                    if (!this.formProperty[field]) {
+                        this.formErrors[field] = `Este campo es requerido.`;
+                    } else {
+                        this.formErrors[field] = "";
+                    }
+                },
             }
         }
     </script>
