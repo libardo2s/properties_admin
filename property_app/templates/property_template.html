@@ -2,7 +2,62 @@
 {% load static %}
 
 {% block content %}
-<div class="relative overflow-x-auto" x-data="getProperties()">
+
+<div x-data="main()">
+    <!-- Toast -->
+    <div id="toast-success" x-show="toast"
+        class="fixed flex items-center w-full max-w-xs p-4 space-x-4 text-gray-500 bg-white divide-x rtl:divide-x-reverse divide-gray-200 rounded-lg shadow top-5 right-5 dark:text-gray-400 dark:divide-gray-700 space-x dark:bg-gray-800"
+        role="alert">
+        <div
+            class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-green-500 bg-green-100 rounded-lg dark:bg-green-800 dark:text-green-200">
+            <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                <path
+                    d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
+            </svg>
+            <span class="sr-only">Check icon</span>
+        </div>
+        <div class="text-sm font-normal" x-text="message"></div>
+    </div>
+    <!-- Error Toast -->
+    <div id="toast-success" x-show="toast"
+        class="fixed flex items-center w-full max-w-xs p-4 space-x-4 text-gray-500 bg-white divide-x rtl:divide-x-reverse divide-gray-200 rounded-lg shadow top-5 right-5 dark:text-gray-400 dark:divide-gray-700 space-x dark:bg-gray-800"
+        role="alert">
+        <div
+            class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-green-500 bg-green-100 rounded-lg dark:bg-green-800 dark:text-green-200">
+            <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                <path
+                    d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
+            </svg>
+            <span class="sr-only">Check icon</span>
+        </div>
+        <div class="text-sm font-normal" x-text="message">Top left positioning.</div>
+    </div>
+    <div class="flex justify-between ">
+        <div class="mb-5">
+            <label for="default-search"
+                class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
+            <div class="relative">
+                <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none"
+                        viewBox="0 0 20 20">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                    </svg>
+                </div>
+                <input type="text" id="default-search"
+                    class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    placeholder="Search..." x-model="searchQuery" @input="filterItems" />
+            </div>
+        </div>
+        <div class="p-4">
+            <button @click="openModalProperty()"
+                class="text-left rtl:text-right block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                type="button">
+                Crear Propiedad
+            </button>
+        </div>
+    </div>
+    <br>
     <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
         <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
@@ -17,35 +72,296 @@
             </tr>
         </thead>
         <tbody class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-            <template x-for=" item in items" :key="item.id">
+            <template x-for=" property in filteredProperties" :key="property.id">
                 <tr>
-                    <td class="px-6 py-4" x-text="item.name"></td>
-                    <td class="px-6 py-4" x-text="item.address"></td>
-                    <td class="px-6 py-4" x-text="item.country"></td>
-                    <td class="px-6 py-4" x-text="item.city"></td>
-                    <td class="px-6 py-4" x-text="item.zip_code"></td>
-                    <td class="px-6 py-4" x-text="item.type"></td>
-                    <td class="px-6 py-4" x-text="item.area"></td>
+                    <td class="px-6 py-4" x-text="property.name"></td>
+                    <td class="px-6 py-4" x-text="property.address"></td>
+                    <td class="px-6 py-4" x-text="property.country"></td>
+                    <td class="px-6 py-4" x-text="property.city"></td>
+                    <td class="px-6 py-4" x-text="property.zip_code"></td>
+                    <td class="px-6 py-4" x-text="filterTypePropertyById(property.type)"></td>
+                    <td class="px-6 py-4" x-text="property.area"></td>
+                    <td class="px-6 py-4">
+                        <div class="flex">
+                            <button @click="openModalProperty(true, property)">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" xmlns="http://www.w3.org/2000/svg"
+                                    width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                    <path fill-rule="evenodd"
+                                        d="M11.32 6.176H5c-1.105 0-2 .949-2 2.118v10.588C3 20.052 3.895 21 5 21h11c1.105 0 2-.948 2-2.118v-7.75l-3.914 4.144A2.46 2.46 0 0 1 12.81 16l-2.681.568c-1.75.37-3.292-1.263-2.942-3.115l.536-2.839c.097-.512.335-.983.684-1.352l2.914-3.086Z"
+                                        clip-rule="evenodd" />
+                                    <path fill-rule="evenodd"
+                                        d="M19.846 4.318a2.148 2.148 0 0 0-.437-.692 2.014 2.014 0 0 0-.654-.463 1.92 1.92 0 0 0-1.544 0 2.014 2.014 0 0 0-.654.463l-.546.578 2.852 3.02.546-.579a2.14 2.14 0 0 0 .437-.692 2.244 2.244 0 0 0 0-1.635ZM17.45 8.721 14.597 5.7 9.82 10.76a.54.54 0 0 0-.137.27l-.536 2.84c-.07.37.239.696.588.622l2.682-.567a.492.492 0 0 0 .255-.145l4.778-5.06Z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                            <button @click="setOpenModalDelete(property)">
+                                <svg class="w-6 h-6 text-gray-800 dark:text-white" xmlns="http://www.w3.org/2000/svg"
+                                    width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        stroke-width="2" d="M6 18 17.94 6M18 18 6.06 6" />
+                                </svg>
+                            </button>
+                        </div>
+                    </td>
 
                 </tr>
             </template>
         </tbody>
     </table>
 
-</div>
+    <!-- Modal -->
+    <div x-show="openModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 flex items-center justify-center">
+        <div class="relative px-6 w-full max-w-md max-h-full">
+            <!-- Modal content -->
+            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                <!-- Modal header -->
+                <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white"
+                        x-text="isEdit ? 'Editar Propiedad' : 'Crear Propiedad'"></h3>
+                    <button type="button" @click="openModal = false"
+                        class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white">
+                        <svg class="w-3 h-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                        </svg>
+                        <span class="sr-only">Close modal</span>
+                    </button>
+                </div>
+                <!-- Modal body -->
+                <form class="p-4 md:p-5" @submit.prevent="saveProperty">
+                    <div class="grid gap-4 mb-4 grid-cols-2">
+                        <div class="col-span-2">
+                            <label for="name"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nombre</label>
+                            <input type="text" id="name" x-model="formProperty.name" required
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                placeholder="Propiedad N">
+                        </div>
+                        <div class="col-span-2">
+                            <label for="address"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Dirección</label>
+                            <input type="text" id="address" x-model="formProperty.address" required
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                placeholder="Calle 30 # 40-29">
+                        </div>
+                        <div class="col-span-2 sm:col-span-1">
+                            <label for="country"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">País</label>
+                            <input type="text" id="country" x-model="formProperty.country" required
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                placeholder="Colombia">
+                        </div>
+                        <div class="col-span-2 sm:col-span-1">
+                            <label for="country"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Ciudad</label>
+                            <input type="text" id="city" x-model="formProperty.city" required
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                placeholder="Valledupar">
+                        </div>
+                        <div class="col-span-2">
+                            <label for="type" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tipo
+                                de
+                                Propiedad</label>
+                            <select id="type" x-model="formProperty.type" required
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                                <template x-for="type in typesProperty" :key="type.id">
+                                    <option :value="type.id" x-text="type.name"></option>
+                                </template>
+                            </select>
+                        </div>
+                        <div class="col-span-2 sm:col-span-1">
+                            <label for="zip_code"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Código
+                                Postal</label>
+                            <input type="number" name="zip_code" x-model="formProperty.zip_code" required maxlength="6"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                placeholder="200005">
+                        </div>
+                        <div class="col-span-2 sm:col-span-1">
+                            <label for="area"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Supericie
+                                (m2)</label>
+                            <input type="number" step="any" id="area" x-model="formProperty.area" required maxlength="6"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                placeholder="60">
+                        </div>
+                    </div>
+                    <button type="submit" x-text="isEdit ? 'Actualizar' : 'Crear'"
+                        class="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                        <svg class="me-1 -ms-1 w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd"
+                                d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+                                clip-rule="evenodd"></path>
+                        </svg>
 
-<script>
-    function getProperties() {
-        return {
-            items: [],
-            init() {
-                fetch('/api/v1/property/')
-                    .then(response => response.json())
-                    .then(data => {
-                        this.items = data.content;
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Delete-->
+    <div x-show="openModalDelete" class="fixed inset-0 bg-gray-600 bg-opacity-75 flex items-center justify-center">
+        <div class="relative p-4 w-full max-w-md max-h-full">
+            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                <button type="button" @click="openModalDelete = false"
+                    class="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white">
+                    <svg class="w-3 h-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+                <div class="p-4 md:p-5 text-center">
+                    <svg class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                    </svg>
+                    <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400" x-text="deleteMessage"></h3>
+                    <button type="button" @click="deleteProperty()"
+                        class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
+                        Si, Eliminar
+                    </button>
+                    <button type="button" @click="openModalDelete = false"
+                        class="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">No,
+                        Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script>
+        function main() {
+            return {
+                properties: [],
+                typesProperty: [],
+                searchQuery: '',
+                filteredProperties: [],
+                openModal: false,
+                openModalDelete: false,
+                isEdit: false,
+                toast: false,
+                propertyId: 0,
+                deleteMessage: "",
+                message: "",
+                formProperty: {
+                    id: null,
+                    name: "",
+                    address: "",
+                    country: "",
+                    city: "",
+                    zip_code: "",
+                    type: "",
+                    area: ""
+                },
+
+                init() {
+                    this.getTypesProperty();
+                    this.getProperties();
+                }, getProperties() {
+                    fetch('/api/v1/property/')
+                        .then(response => response.json())
+                        .then(data => {
+                            this.properties = data.content;
+                            this.filteredProperties = data.content;
+                        });
+                }, getTypesProperty() {
+                    fetch('/api/v1/types/property/')
+                        .then(response => response.json())
+                        .then(data => {
+                            this.typesProperty = data.content;
+                        });
+
+                }, saveProperty() {
+                    const url = this.isEdit ? `/api/v1/property/${this.formProperty.id}/` : '/api/v1/property/';
+                    const method = this.isEdit ? 'PUT' : 'POST';
+                    fetch(url, {
+                        method: method,
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': '{{ csrf_token }}',
+                        },
+                        body: JSON.stringify(this.formProperty)
+                    })
+                        .then(response => {
+                            if (response.ok) {
+                                return response.json();
+                            }
+                            return response.json().then((errorData) => {
+                                let errorMessage = '';
+                                if (Array.isArray(errorData.message)) {
+                                    errorMessage = errorData.errors.join(', '); // Join the error messages into a single string
+                                }
+                                console.log(errorData)
+                            });
+                        })
+                        .then(data => {
+                            if (this.isEdit) {
+                                const index = this.filteredProperties.findIndex(item => item.id === data.content.id);
+                                this.filteredProperties[index] = data.content;
+                            } else {
+                                this.filteredProperties.push(data.content)
+                            }
+                            this.openModal = false;
+                            this.showToast(data.message);
+
+                        }).catch(error => {
+
+                        });
+                }, deleteProperty() {
+                    const url = `/api/v1/property/${this.propertyId}/`
+                    fetch(url, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': '{{ csrf_token }}',
+                        },
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            const index = this.filteredProperties.findIndex(item => item.id === this.propertyId);
+                            if (index !== -1)
+                                this.filteredProperties.splice(index, 1);
+                            this.openModalDelete = false
+                            this.showToast(data.message);
+                        });
+                }, filterItems() {
+                    this.filteredProperties = this.properties.filter(property => {
+                        return property.name.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+                            property.address.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+                            property.country.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+                            property.city.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+                            property.area.toLowerCase().includes(this.searchQuery.toLowerCase());
                     });
+                }, filterTypePropertyById(id) {
+                    let typeName = this.typesProperty.filter(item => {
+                        return item.id == id
+                    })
+                    return typeName[0].name
+                }, openModalProperty(edit = false, item = null) {
+                    this.openModal = true;
+                    this.isEdit = edit
+
+                    if (edit && item) {
+                        this.formProperty = { ...item }
+                    } else {
+                        this.formProperty = { name: "", address: "", country: "", city: "", zip_code: "", type: "", area: "" }
+                    }
+                }, setOpenModalDelete(property) {
+                    this.openModalDelete = true
+                    this.propertyId = property.id
+                    this.deleteMessage = `Estas seguro que deseas eliminar la propiedad ${property.name} ?`
+
+                }, showToast(message) {
+                    this.message = message;
+                    this.toast = true;
+                    setTimeout(() => { this.toast = false; }, 5000); // Hide after 3 seconds
+                }
             }
         }
-    }
-</script>
-{% endblock content %}
+    </script>
+    {% endblock content %}
