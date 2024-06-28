@@ -19,18 +19,19 @@
         <div class="text-sm font-normal" x-text="message"></div>
     </div>
     <!-- Error Toast -->
-    <div id="toast-success" x-show="toast"
+    <div id="toast-danger" x-show="toastError"
         class="fixed flex items-center w-full max-w-xs p-4 space-x-4 text-gray-500 bg-white divide-x rtl:divide-x-reverse divide-gray-200 rounded-lg shadow top-5 right-5 dark:text-gray-400 dark:divide-gray-700 space-x dark:bg-gray-800"
         role="alert">
         <div
-            class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-green-500 bg-green-100 rounded-lg dark:bg-green-800 dark:text-green-200">
-            <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+            class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-red-500 bg-red-100 rounded-lg dark:bg-red-800 dark:text-red-200">
+            <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                viewBox="0 0 20 20">
                 <path
-                    d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
+                    d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 11.793a1 1 0 1 1-1.414 1.414L10 11.414l-2.293 2.293a1 1 0 0 1-1.414-1.414L8.586 10 6.293 7.707a1 1 0 0 1 1.414-1.414L10 8.586l2.293-2.293a1 1 0 0 1 1.414 1.414L11.414 10l2.293 2.293Z" />
             </svg>
-            <span class="sr-only">Check icon</span>
+            <span class="sr-only">Error icon</span>
         </div>
-        <div class="text-sm font-normal" x-text="message">Top left positioning.</div>
+        <div class="text-sm font-normal" x-text="errorMessage"></div>
     </div>
     <div class="flex justify-between ">
         <div class="mb-5">
@@ -191,7 +192,7 @@
                             <label for="area"
                                 class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Supericie
                                 (m2)</label>
-                            <input type="number" step="any" id="area" x-model="formProperty.area"
+                            <input type="number" step="any" name="area" x-model="formProperty.area"
                                 @blur="validateField('area')"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                 placeholder="60">
@@ -261,6 +262,8 @@
                 propertyId: 0,
                 deleteMessage: "",
                 message: "",
+                errorMessage: "",
+                toastError: false,
                 formProperty: {
                     id: null,
                     name: "",
@@ -324,11 +327,23 @@
                                     return response.json();
                                 }
                                 return response.json().then((errorData) => {
-                                    let errorMessage = '';
-                                    if (Array.isArray(errorData.message)) {
-                                        errorMessage = errorData.errors.join(', '); // Join the error messages into a single string
+                                    const messages = errorData.message;
+                                    let errorMessage = ''
+
+                                    if (response.status == 400) {
+                                        for (const key in messages) {
+                                            if (messages.hasOwnProperty(key)) {
+                                                const errorMessages = messages[key];
+                                                errorMessages.forEach(message => {
+                                                    errorMessage += (`${key}: ${message} \n`);
+                                                });
+                                            }
+                                        }
+                                    } else {
+                                        errorMessage = messages
                                     }
-                                    console.log(errorData)
+
+                                    throw new Error(errorMessage);
                                 });
                             })
                             .then(data => {
@@ -342,7 +357,9 @@
                                 this.showToast(data.message);
 
                             }).catch(error => {
-
+                                console.error('Fetch error:', error);
+                                this.showToastError(error.message);
+                                this.openModal = false;
                             });
                     }
 
@@ -393,9 +410,19 @@
                 }, showToast(message) {
                     this.message = message;
                     this.toast = true;
-                    setTimeout(() => { this.toast = false; }, 5000); // Hide after 3 seconds
+                    setTimeout(() => { this.toast = false; }, 6000);
+                }, showToastError(message) {
+                    this.errorMessage = message
+                    this.toastError = true
+                    setTimeout(() => { this.toastError = false; }, 6000);
                 },
                 validateField(field) {
+                    if (field === 'area' && this.formProperty.area.length > 6) {
+                        this.formErrors[field] = "Area must be 6 characters or fewer.";
+                    } else if (field === 'zip_code' && this.formProperty.zip_code.length > 6) {
+                        this.formErrors[field] = "Zip code must be 6 characters or fewer.";
+                    }
+
                     if (!this.formProperty[field]) {
                         this.formErrors[field] = `Este campo es requerido.`;
                     } else {

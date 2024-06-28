@@ -160,7 +160,7 @@ class PropertyApiView(APIView):
             }
             return Response(
                 response,
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                status=status.HTTP_404_NOT_FOUND,
             )
         except Exception as e:
             response = {
